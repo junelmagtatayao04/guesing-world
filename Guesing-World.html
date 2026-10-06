@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Document</title>
+</head>
+
+<body
+    class="bg-[url('https://i.pinimg.com/originals/48/0a/ee/480aee7883ad00f7457902cc51492ee1.gif')] bg-center bg-cover bg-no-repeat">
+    <div id="app">
+        <div class="flex justify-center mt-10">
+            <div>
+                <div>
+                    <h1 class="text-8xl text-center mb-5 text-green-400">
+                        {{display.join(" ")}}
+                    </h1>
+
+                </div>
+                <div v-for="(row,i) in letters" :key="i"
+                    class="flex justify-center mb-3 gap-3 font-bold text-green-400">
+                    <div v-for="letter in row" :key="letter" @click="press(letter)" :class="['border rounded-xl text-7xl cursor-pointer hover:bg-blue-200 duration-200 p-5',
+                        usedLetters.includes(letter)
+                        ? 'text-blue-500 bg-gray-400 cursor-not-allowed'
+                        : 'bg-blue-800 cursor-pointer'
+                        
+                        ]">
+                        {{letter}}
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-center items-center">
+                    <div
+                        class="font-bold py-2 px-5 m-5 rounded-lg text-2xl duration-200 text-white bg-orange-700 border-3 border-white ">
+                        <h1>
+                            {{message}}
+                        </h1>
+                    </div>
+                    <div>
+                        <button @click="restartGame"
+                            class="font-bold py-2 px-3 rounded-lg cursor-pointer bg-blue-500 hover:bg-blue-600">Restart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    letters: [
+                        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",],
+                        ["A", "S", "D", "F", "G", "H", "J", "K", "L",],
+                        ["Z", "X", "C", "V", "B", "N", "M",]
+                    ],
+                    display: ["_", "_", "_", "_", "_",],
+                    words: ["TIGER", "SPEED", "DENNA", "SYBIL", "GWAPO"],
+                    usedLetters: [],
+                    randomValue: "",
+                    message: "",
+
+                }
+            },
+            methods: {
+                randomWords() {
+                    let random = Math.floor(Math.random() * this.words.length);
+                    return this.words[random];
+                },
+                press(letter) {
+                    if (this.usedLetters.includes(letter)) return
+                    this.usedLetters.push(letter);
+                    for (let i = 0; i < this.randomValue.length; i++) {
+                        if (this.randomValue[i] === letter) {
+                            this.display[i] = letter;
+                        }
+
+                    }
+                    this.isWinner()
+
+                },
+                isWinner() {
+                    if (this.display.join("") === this.randomValue) {
+                        this.message = 'you win'
+                    }
+                },
+                restartGame() {
+                    this.usedLetters = [];
+                    this.randomValue = '';
+                    this.message = '';
+                    this.display = ["_", "_", "_", "_", "_",]
+                    this.randomValue = this.randomWords();
+                    console.log(this.randomValue)
+
+
+                }
+
+            },
+            mounted() {
+                this.randomValue = this.randomWords();
+                
+            }
+
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
